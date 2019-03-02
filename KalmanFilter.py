@@ -9,6 +9,7 @@
 
 import cv2 as cv
 import numpy as np
+import sys
 
 # Instantiate OCV kalman filter
 class KalmanFilter:
@@ -31,7 +32,7 @@ class ProcessImage:
 
     def DetectObject(self):
 
-        vid = cv.VideoCapture('/usr/local/Dexter/DeepPython/PractisePython/BallBounceReference.mp4')
+        vid = cv.VideoCapture('ball.mp4')
 
         if(vid.isOpened() == False):
             print('Cannot open input video')
@@ -52,14 +53,14 @@ class ProcessImage:
                 predictedCoords = kfObj.Estimate(ballX, ballY)
 
                 # Draw Actual coords from segmentation
-                cv.circle(frame, (ballX, ballY), 20, [0,0,255], 2, 8)
-                cv.line(frame,(ballX, ballY + 20), (ballX + 50, ballY + 20), [100,100,255], 2,8)
-                cv.putText(frame, "Actual", (ballX + 50, ballY + 20), cv.FONT_HERSHEY_SIMPLEX,0.5, [50,200,250])
+                cv.circle(frame, (int(ballX), int(ballY)), 20, [0,0,255], 2, 8)
+                cv.line(frame,(int(ballX), int(ballY + 20)), (int(ballX + 50), int(ballY + 20)), [100,100,255], 2,8)
+                cv.putText(frame, "Actual", (int(ballX + 50), int(ballY + 20)), cv.FONT_HERSHEY_SIMPLEX,0.5, [50,200,250])
 
                 # Draw Kalman Filter Predicted output
                 cv.circle(frame, (predictedCoords[0], predictedCoords[1]), 20, [0,255,255], 2, 8)
                 cv.line(frame, (predictedCoords[0] + 16, predictedCoords[1] - 15), (predictedCoords[0] + 50, predictedCoords[1] - 30), [100, 10, 255], 2, 8)
-                cv.putText(frame, "Predicted", (predictedCoords[0] + 50, predictedCoords[1] - 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, [50, 200, 250])
+                cv.putText(frame, "Predicted", (int(predictedCoords[0] + 50), int(predictedCoords[1] - 30)), cv.FONT_HERSHEY_SIMPLEX, 0.5, [50, 200, 250])
                 cv.imshow('Input', frame)
 
                 if (cv.waitKey(300) & 0xFF == ord('q')):
@@ -89,17 +90,22 @@ class ProcessImage:
 
         # First biggest contour is image border always, Remove it
         stats = np.delete(stats, (0), axis = 0)
-        maxBlobIdx_i, maxBlobIdx_j = np.unravel_index(stats.argmax(), stats.shape)
+        try:
+            maxBlobIdx_i, maxBlobIdx_j = np.unravel_index(stats.argmax(), stats.shape)
 
         # This is our ball coords that needs to be tracked
-        ballX = stats[maxBlobIdx_i, 0] + (stats[maxBlobIdx_i, 2]/2)
-        ballY = stats[maxBlobIdx_i, 1] + (stats[maxBlobIdx_i, 3]/2)
+            ballX = stats[maxBlobIdx_i, 0] + (stats[maxBlobIdx_i, 2]/2)
+            ballY = stats[maxBlobIdx_i, 1] + (stats[maxBlobIdx_i, 3]/2)
+            return [ballX, ballY]
+        except:
+               pass
 
-        return [ballX, ballY]
+        return [0,0]
 
 
 #Main Function
 def main():
+
     processImg = ProcessImage()
     processImg.DetectObject()
 
