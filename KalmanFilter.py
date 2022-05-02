@@ -58,8 +58,8 @@ class ProcessImage:
                 cv.putText(frame, "Actual", (int(ballX + 50), int(ballY + 20)), cv.FONT_HERSHEY_SIMPLEX,0.5, [50,200,250])
 
                 # Draw Kalman Filter Predicted output
-                cv.circle(frame, (predictedCoords[0], predictedCoords[1]), 20, [0,255,255], 2, 8)
-                cv.line(frame, (predictedCoords[0] + 16, predictedCoords[1] - 15), (predictedCoords[0] + 50, predictedCoords[1] - 30), [100, 10, 255], 2, 8)
+                cv.circle(frame, (int(predictedCoords[0]), int(predictedCoords[1])), 20, [0,255,255], 2, 8)
+                cv.line(frame, (int(predictedCoords[0]) + 16, int(predictedCoords[1]) - 15), (int(predictedCoords[0]) + 50, int(predictedCoords[1]) - 30), [100, 10, 255], 2, 8)
                 cv.putText(frame, "Predicted", (int(predictedCoords[0] + 50), int(predictedCoords[1] - 30)), cv.FONT_HERSHEY_SIMPLEX, 0.5, [50, 200, 250])
                 cv.imshow('Input', frame)
 
