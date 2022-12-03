@@ -20,9 +20,9 @@ class KalmanFilter:
 
     def Estimate(self, coordX, coordY):
         ''' This function estimates the position of the object'''
-        measured = np.array([[np.float32(coordX)], [np.float32(coordY)]])
-        self.kf.correct(measured)
+        measured = np.array([[np.float32(coordX)], [np.float32(coordY)]])        
         predicted = self.kf.predict()
+        self.kf.correct(measured)
         return predicted
 
 
